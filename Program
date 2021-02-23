@@ -1,0 +1,92 @@
+// Returns a random DNA base
+const returnRandBase = () => {
+  const dnaBases = ['A', 'T', 'C', 'G']
+  return dnaBases[Math.floor(Math.random() * 4)] 
+}
+
+// Returns a random single stand of DNA containing 15 bases
+const mockUpStrand = () => {
+  const newStrand = []
+  for (let i = 0; i < 15; i++) {
+    newStrand.push(returnRandBase())
+  }
+  return newStrand
+}
+
+const pAequorFactory = (num, dnaBase) => {
+  return {
+    _specimenNum: num,
+    _dna: dnaBase,
+    
+    //Mutate randomly selects a base in the object's dna property and changes the current base to a different base.
+    mutate() { 
+      let randomBase = Math.floor(Math.random() * 15);
+      let dnaBaseNoA = ['T', 'C', 'G'];
+      let dnaBaseNoT = ['A', 'C', 'G'];
+      let dnaBaseNoC = ['A', 'T', 'G'];
+      let dnaBaseNoG = ['A', 'T', 'C'];
+
+      //Changes DNA to different base - cannot contain the same base
+      if (this._dna[randomBase] === 'A') {
+        this._dna[randomBase] = dnaBaseNoA[Math.floor(Math.random() * 3)];
+      } else if (this._dna[randomBase] === 'T') {
+        this._dna[randomBase] = dnaBaseNoT[Math.floor(Math.random() * 3)];
+      } else if (this._dna[randomBase] === 'C') {
+        this._dna[randomBase] = dnaBaseNoC[Math.floor(Math.random() * 3)];
+      } else if (this._dna[randomBase] === 'G') {
+        this._dna[randomBase] = dnaBaseNoG[Math.floor(Math.random() * 3)];
+      } // End if loop
+
+      //Mutate return the object's dna
+      return this._dna
+    
+    }, //Ends mutate() function
+
+    compareDNA (pAequor) {
+      let commonDNA = 0;
+      let j = 0;
+
+      for (_dna in this._dna) {
+        if (this._dna[_dna] === pAequor._dna[j]){
+          commonDNA++;
+        } j++;
+      }
+
+      const percentShared = ((commonDNA/this._dna.length) * 100).toFixed();
+
+      return `Specimen #${this.specimenNum} and specimen #${pAqueor.specimenNum} have ${percentShared}% DNA in common.`
+    }, //End compareDNA
+
+    //Method for chance of survival
+    willLikelySurvive() {
+      let numOfGOrC = 0;
+      for (_dna in this._dna){
+        if (this._dna[_dna] === 'G' || this._dna[_dna] === 'C'){
+          numOfGOrC++;
+        }
+
+      const percentage = (numOfGOrC/(this._dna.length)*100).toFixed();
+
+      if (percentage >= 60){
+        return true;
+      } else {
+        return false;
+      }
+    }    
+
+  }
+}
+}
+
+//Crete 30 instances
+let i = 1;
+let survival = [];
+while (i <= 30){
+  let instance = pAequorFactory(i, mockUpStrand());
+  if (instance.willLikelySurvive() === true){
+    survival.push(instance)
+  }
+  i++;
+}
+
+console.log(survival);
